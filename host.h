@@ -176,7 +176,7 @@ public:
 };
 class Luxury : public Room {
 public:
-    Luxury(int price = 5000) : Room (price, 3) {}
+    Luxury(int price = 8000) : Room (price, 3) {}
 };
 class Semi_luxury : public Room {
 public:

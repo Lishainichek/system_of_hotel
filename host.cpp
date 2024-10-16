@@ -13,6 +13,12 @@ std::mt19937 rnd(std::time(nullptr));
 bool stop = 0;
 long double sum = 0;
 int free_ = 0;
+int first = 0;
+int second = 0;
+int third = 0;
+int fourth = 0;
+int count_of_done = 0;
+int count_of_gotten;
 
 bool fifty_fifty() {
     return rnd() % 2;
@@ -271,14 +277,20 @@ void do_animation() {
 
 
 void host::start() {
-    if (count < 10) {
+    if (count < 5) {
         start_programm();
     } else {
-        std::cout << sum << ' ';
+        std::cout << sum << ' ' << 1.0 *  count_of_done / count_of_gotten  * 100 << '\n';
+        std::cout << "first :" << 1.0 * first / 30 * 100 << '\n';
+        std::cout << "second :" << 1.0 * second / 30 * 100<< '\n';
+        std::cout << "third :" << 1.0 * third / 30 * 100 << '\n';
+        std::cout << "fourth :" << 1.0 * fourth / 30 * 100 << '\n';
+
     }
 }
 
 void host::start_programm() {
+    count_of_gotten++;
     free_ = 0;
     for (auto ii : rooms) {
         free_ += ii -> rom -> occupancy_[count];
@@ -295,6 +307,17 @@ void host::start_programm() {
         goto pin;
     }
     if (current -> get_wanted_type() == rooms[idx] -> type) {
+        count_of_done++;
+        int rz = current -> getDuration() - current -> getCurDay();
+        if (rooms[idx] -> type == 0) {
+            first += rz;
+        } else if (rooms[idx] -> type == 1) {
+            second += rz;
+        } else if (rooms[idx] -> type == 2) {
+            third += rz;
+        } else {
+            fourth += rz;
+        }
         rooms[idx] -> guest = current;
         rooms[idx] -> rom -> add_guest(current);
         sum += rooms[idx] -> rom -> getPrice() * (current -> getDuration() - current -> getCurDay()) + ((free_ > 15) ? 500
@@ -304,30 +327,32 @@ void host::start_programm() {
         for (int ii = 19; ii >= 0 && rooms[ii] -> rom -> occupancy_[count] == 1; --ii) {
            idx--;
         }
+        if (free_ > 17) {
+            goto pin;
+        }
+
         if (fifty_fifty()) {
             rooms[idx] -> guest = current;
             rooms[idx] -> rom -> add_guest(current);
             sum += rooms[idx] -> rom -> getPrice() * (current -> getDuration() - current -> getCurDay()) + ((free_ > 15) ? 500
                 * (current -> getDuration() - current -> getCurDay()) : 0);
+            count_of_done++;
+            int rz = current -> getDuration() - current -> getCurDay();
+            if (rooms[idx] -> type == 0) {
+                first += rz;
+            } else if (rooms[idx] -> type == 1) {
+                second += rz;
+            } else if (rooms[idx] -> type == 2) {
+                third += rz;
+            } else {
+                fourth += rz;
+            }
         }
     }
     pin:
     add_time();
     update();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 std::pair<Room*,int> createRandomRoom() {
