@@ -349,6 +349,7 @@ void host::start_programm() {
             }
         }
     }
+    //ll
     pin:
     add_time();
     update();
